@@ -5,3 +5,8 @@ export class TaskDto {
   status: string;
   expirationDate: Date;
 }
+
+export class FindAllParameters {
+  title: string;
+  status: string;
+}

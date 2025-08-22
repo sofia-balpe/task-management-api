@@ -4,8 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { TaskDto } from './task.dto';
-import { identity } from 'rxjs';
+import { FindAllParameters, TaskDto } from './task.dto';
 
 @Injectable()
 export class TaskService {
@@ -26,6 +25,22 @@ export class TaskService {
     throw new NotFoundException(`Task with id ${id} not found`);
   }
 
+  findAll(params: FindAllParameters): TaskDto[] {
+    return this.tasks.filter((t) => {
+      let match = true;
+
+      if (params.title != undefined && t.title !== params.title) {
+        match = false;
+      }
+
+      if (params.status != undefined && t.status !== params.status) {
+        match = false;
+      }
+
+      return match;
+    });
+  }
+
   update(task: TaskDto) {
     const taskIndex = this.tasks.findIndex((t) => (t.id = task.id));
 
@@ -36,6 +51,18 @@ export class TaskService {
 
     throw new HttpException(
       `Task with id ${task.id} not found`,
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
+  remove(id: string) {
+    const taskIndex = this.tasks.findIndex((t) => t.id === id); //encontra a task pelo index
+    if (taskIndex >= 0) {
+      this.tasks.splice(taskIndex, 1); //o número significa a quantidade de itens que será removido (remove 1 item nesse index)
+    }
+
+    throw new HttpException(
+      `Task with id ${id} not found`,
       HttpStatus.BAD_REQUEST,
     );
   }
