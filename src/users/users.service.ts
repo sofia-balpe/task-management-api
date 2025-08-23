@@ -11,6 +11,11 @@ export class UsersService {
     newUser.id = uuid();
     newUser.password = hashSync(newUser.password, 10);
     this.users.push(newUser);
-    console.log(this.users);
+  }
+
+  //Consulta de usuário pelo nome:
+  findByUserName(username: string): UserDto | null {
+    //vai retonar um userDto ou nulo
+    return this.users.find((user) => user.username === username);
   }
 }
